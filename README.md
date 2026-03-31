@@ -15,19 +15,3 @@ A collection of Claude Code skills (markdown SOPs for AI) used by the BAD Market
 | Doc | Description |
 |-----|-------------|
 | [weekly-creative-analytics-sop.md](weekly-creative-analytics-sop.md) | Full weekly process SOP (data pull → status updates → dashboards → reports) |
-
-## Funnel Mapping
-| Skill | Description |
-|-------|-------------|
-| [funnel-maps-layout-reference.md](funnel-maps-layout-reference.md) | Miro funnel map layout standards |
-
-## n8n Automation
-| Skill | Description |
-|-------|-------------|
-| [n8n/workflow-patterns.md](n8n/workflow-patterns.md) | Proven workflow architectural patterns |
-| [n8n/node-configuration.md](n8n/node-configuration.md) | Node configuration guidance |
-| [n8n/code-javascript.md](n8n/code-javascript.md) | JavaScript in n8n Code nodes |
-| [n8n/code-python.md](n8n/code-python.md) | Python in n8n Code nodes |
-| [n8n/expression-syntax.md](n8n/expression-syntax.md) | n8n expression syntax guide |
-| [n8n/validation-expert.md](n8n/validation-expert.md) | Validation error interpretation |
-| [n8n/mcp-tools-expert.md](n8n/mcp-tools-expert.md) | MCP tools usage guide |
