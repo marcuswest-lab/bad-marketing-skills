@@ -584,6 +584,24 @@ The `#` (index) and `Name` columns must be sticky (`position: sticky`) so they r
 - On `tr:hover`, update the sticky cell backgrounds to the hover color (`#1a1f2e`)
 - `thead th` equivalents need higher `z-index: 11` to stay above sticky `td` cells
 
+### Sticky Header Row
+
+The `thead` row must be sticky (`position: sticky; top: 0`) so column headers remain visible when scrolling vertically:
+```css
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #151922;
+}
+/* Corner cells (sticky both directions) need highest z-index */
+thead th.stick-idx,
+thead th.stick-name {
+  z-index: 15;
+}
+```
+The table container should have `overflow-y: auto; max-height: calc(100vh - 280px)` to enable vertical scrolling within the table area while keeping the header fixed.
+
 ### Legend
 
 Centered below subtitle, updates dynamically based on active tab:
@@ -598,6 +616,42 @@ Do not include a totals/summary row at the bottom of tables.
 ### View Links
 
 The "Ad" column shows a `View ↗` link (with an external-link SVG icon) that opens the ad preview/folder in a new tab. Show `—` (em dash in muted gray) if no link is available. Link styling: `color: #60A5FA`, hover `#93C5FD`, font-family DM Sans, 11px, `display: inline-flex; align-items: center; gap: 3px`.
+
+### Brief Links
+
+The "Brief" column shows a `Brief ↗` link that opens the creative brief Google Doc in a new tab. This is extracted from the **Request Doc** column in the Creative Tracker xlsx files:
+
+- **Old-format tracker** (`*Creative & Copy Tracking Sheet*`): "Request Doc" column (col 9 in Static Ad Tracker / Video Ad Tracker / Copy Tracker) — check `cell.hyperlink.target` for the Google Doc URL
+- **New-format tracker** (`*Creative Tracker*` or `*2.0*`): "Request Doc" column (col M in Static Creative Tracker, col L in Video Creative Tracker) — check `cell.hyperlink.target`
+
+**Extraction logic:**
+```python
+def extract_brief_links(file_path, sheet_name, name_col, request_doc_col):
+    """Extract brief (Request Doc) links from tracker sheets."""
+    wb = openpyxl.load_workbook(file_path, data_only=True)
+    ws = wb[sheet_name]
+    brief_map = {}
+    for row in ws.iter_rows(min_row=2, max_row=ws.max_row):
+        name = str(row[name_col-1].value or '').strip()
+        if not name: continue
+        cell = row[request_doc_col-1]
+        url = None
+        if cell.hyperlink and cell.hyperlink.target and 'http' in str(cell.hyperlink.target):
+            url = cell.hyperlink.target
+        elif cell.value and 'http' in str(cell.value):
+            url = str(cell.value)
+        if url:
+            brief_map[name] = url
+    wb.close()
+    return brief_map
+```
+
+**Display:** Same styling as View links but with text "Brief" instead of "View". Show `—` if no brief link available. Place the Brief column immediately after the Ad (View) column.
+
+**Data field:** Each ad entry should include a `brief` field alongside the existing `link` field:
+```javascript
+{name:'SC7_CheckThis | SV8_Gmail', link:'https://drive.google.com/...', brief:'https://docs.google.com/document/d/...', cost:71384, ...}
+```
 
 ### Search and Filter Controls
 
